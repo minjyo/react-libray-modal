@@ -1,24 +1,9 @@
 import React, { Fragment, useState, useEffect } from "react";
 import "./Modal.scss";
 import styled, { css } from "styled-components";
+import { any } from "prop-types";
 
 const Modal: React.FC<IProps> = props => {
-    const [open, setOpen] = useState(false);
-    const [response, setResponse] = useState(false);
-
-    const close = (response: boolean) => {
-        setOpen(!open);
-        setResponse(response);
-    };
-
-    // useEffect(() => {
-    //     console.log("렌더링이 완료되었습니다!");
-    //     console.log({
-    //         name,
-    //         nickname
-    //     });
-    // });
-
     const Background = styled.div`
         position: fixed;
         top: 0;
@@ -30,18 +15,18 @@ const Modal: React.FC<IProps> = props => {
 
     const ModalBox = styled.div`
         position: fixed;
-        top: ${props.y}%;
-        left: ${props.x}%;
+        top: ${props.style.x}%;
+        left: ${props.style.y}%;
         transform: translate(-50%, -50%);
-        width: ${props.width}%;
-        height: ${props.height}%;
+        width: ${props.style.width}%;
+        height: ${props.style.height}%;
         border-radius: 10px;
     `;
 
     const TitleBox = styled.div`
         height: 15%;
-        background: ${props.title_background};
-        color: ${props.title_color};
+        background: ${props.style.title_background};
+        color: ${props.style.title_color};
         border-radius: 10px 10px 0px 0px;
         display: flex;
         justify-content: center;
@@ -50,16 +35,21 @@ const Modal: React.FC<IProps> = props => {
 
     const ContentBox = styled.div`
         height: 65%;
-        background: ${props.content_background};
-        color: ${props.content_color};
+        background: ${props.style.content_background};
+        color: ${props.style.content_color};
+        word-break: break-all;
+        text-align: center;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
+        padding-left: 10px;
+        padding-right: 10px;
     `;
 
     const BtnBox = styled.div`
         height: 20%;
-        background: ${props.content_background};
+        background: ${props.style.content_background};
         display: flex;
         flex-direction: row;
         justify-content: space-around;
@@ -67,116 +57,89 @@ const Modal: React.FC<IProps> = props => {
         border-radius: 0px 0px 10px 10px;
     `;
 
-    const SingleBtn = styled.button`
+    const SingleBtn = styled.div`
         border: 2px solid black;
-        background: ${props.btn_background};
-        color: ${props.btn_color};
+        background: ${props.style.btn_background};
+        color: ${props.style.btn_color};
         height: 80%;
         width: 70%;
         outline: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     `;
 
-    const DoubleBtn = styled.button`
+    const DoubleBtn = styled.div`
         border: none;
         border-radius: 10px;
-        background: ${props.btn_background};
-        color: ${props.btn_color};
+        background: ${props.style.btn_background};
+        color: ${props.style.btn_color};
         width: 40%;
         height: 80%;
         outline: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     `;
 
     return (
         <Fragment>
-            {open ? (
-                <Fragment>
-                    <Background></Background>
-                    <ModalBox>
-                        <TitleBox>
-                            <div className="Text">{props.title_text}</div>
-                        </TitleBox>
-                        <ContentBox>
-                            <div className="Text">{props.content_text}</div>
-                        </ContentBox>
-                        <BtnBox>
-                            {props.btn_num === 1 ? (
-                                <SingleBtn>{props.btn_text && props.btn_text[0]}</SingleBtn>
-                            ) : (
-                                <Fragment>
-                                    <DoubleBtn onClick={() => close(true)}>{props.btn_text && props.btn_text[0]}</DoubleBtn>
-                                    <DoubleBtn onClick={() => close(false)}>{props.btn_text && props.btn_text[1]}</DoubleBtn>
-                                </Fragment>
-                            )}
-                        </BtnBox>
-                    </ModalBox>
-                </Fragment>
-            ) : (
-                <div>
-                    <button onClick={() => close(false)}>click!</button>
-                    <div>response : {response.toString()}</div>
-                </div>
-            )}
+            <Background></Background>
+            <ModalBox>
+                <TitleBox>{props.title}</TitleBox>
+                <ContentBox>
+                    {props.content.split("\n").map(line => {
+                        return (
+                            <span>
+                                {line}
+                                <br />
+                            </span>
+                        );
+                    })}
+                </ContentBox>
+                <BtnBox>
+                    {props.btn.length === 1 ? (
+                        <SingleBtn>{props.btn[0]}</SingleBtn>
+                    ) : (
+                        <Fragment>
+                            <DoubleBtn onClick={() => props.handleModal()}>{props.btn[0]}</DoubleBtn>
+                            <DoubleBtn onClick={() => props.handleModal()}>{props.btn[1]}</DoubleBtn>
+                        </Fragment>
+                    )}
+                </BtnBox>
+            </ModalBox>
         </Fragment>
     );
 };
 
 interface IProps {
-    /*
-    TODO
-    이렇게 각각 말고 스타일 객체로 넘겨주기
-    버튼 여러개 만들어서 바로 띄울 수 있게
-    버튼 결과값 리턴
-    ???? : styled component Modal밖으로 어떻게 빼는지
-    */
+    style?: any;
 
-    //모달 위치
-    x?: number;
-    y?: number;
+    handleModal: () => void;
 
-    //모달 크기
-    width?: number;
-    height?: number;
-
-    //제목 텍스트, 배경색, 글자색
-    title_text?: string;
-    title_background?: string;
-    title_color?: string;
-
-    //내용 텍스트, 배경색, 글자색
-    content_text?: string;
-    content_background?: string;
-    content_color?: string;
-
-    //버튼 개수, 텍스트, 배경색, 글자색
-    btn_num?: number;
-    btn_text?: string[];
-    btn_background?: string;
-    btn_color?: string;
-
-    //modal border weight, color, radius
+    title: React.ReactNode;
+    content: string;
+    btn: React.ReactNode[];
 }
 
-const defaultProps: IProps = {
-    x: 50,
-    y: 50,
+Modal.defaultProps = {
+    style: {
+        x: 50,
+        y: 50,
 
-    width: 20,
-    height: 30,
+        width: 50,
+        height: 50,
 
-    title_text: "title_text",
-    title_background: "white",
-    title_color: "blue",
+        title_background: "white",
+        title_color: "black",
 
-    content_text: "content_text",
-    content_background: "orange",
-    content_color: "black",
+        content_background: "white",
+        content_color: "black",
 
-    btn_num: 2,
-    btn_text: ["btn1", "btn2"],
-    btn_background: "green",
-    btn_color: "black"
+        btn_num: 2,
+        btn_background: "skyblue",
+        btn_color: "white"
+    }
 };
-
-Modal.defaultProps = defaultProps;
 
 export default Modal;
