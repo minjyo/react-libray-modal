@@ -1,9 +1,15 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState } from "react";
 import "./Modal.scss";
 import styled, { css } from "styled-components";
 import { any } from "prop-types";
 
 const Modal: React.FC<IProps> = props => {
+    const [rest, setRest] = useState(0);
+
+    const decreaseRest = () => {
+        setRest(rest - 1);
+    };
+
     const Background = styled.div`
         position: fixed;
         top: 0;
@@ -57,8 +63,7 @@ const Modal: React.FC<IProps> = props => {
         border-radius: 0px 0px 10px 10px;
     `;
 
-    const SingleBtn = styled.div`
-        border: 2px solid black;
+    const Btn = styled.div`
         background: ${props.style.btn_background};
         color: ${props.style.btn_color};
         height: 80%;
@@ -67,19 +72,7 @@ const Modal: React.FC<IProps> = props => {
         display: flex;
         align-items: center;
         justify-content: center;
-    `;
-
-    const DoubleBtn = styled.div`
-        border: none;
         border-radius: 10px;
-        background: ${props.style.btn_background};
-        color: ${props.style.btn_color};
-        width: 40%;
-        height: 80%;
-        outline: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
     `;
 
     return (
@@ -98,14 +91,7 @@ const Modal: React.FC<IProps> = props => {
                     })}
                 </ContentBox>
                 <BtnBox>
-                    {props.btn.length === 1 ? (
-                        <SingleBtn>{props.btn[0]}</SingleBtn>
-                    ) : (
-                        <Fragment>
-                            <DoubleBtn onClick={() => props.handleModal()}>{props.btn[0]}</DoubleBtn>
-                            <DoubleBtn onClick={() => props.handleModal()}>{props.btn[1]}</DoubleBtn>
-                        </Fragment>
-                    )}
+                    <Btn>{props.btn}</Btn>
                 </BtnBox>
             </ModalBox>
         </Fragment>
@@ -119,7 +105,7 @@ interface IProps {
 
     title: React.ReactNode;
     content: string;
-    btn: React.ReactNode[];
+    btn: React.ReactNode;
 }
 
 Modal.defaultProps = {

@@ -38,7 +38,7 @@ const App: React.FC = () => {
                         content={
                             "첫줄 자동줄바꿈 첫줄 자동줄바꿈 첫줄 자동줄바꿈 첫줄 자동줄바꿈 첫줄 자동줄바꿈 첫줄 자동줄바꿈 첫줄 자동줄바꿈 첫줄 자동줄바꿈 첫줄 자동줄바꿈 첫줄 자동줄바꿈 첫줄 자동줄바꿈\n 두번째줄두번째줄두번째줄두번째줄두번째줄\n "
                         }
-                        btn={[<div>yes</div>, <div>no</div>]}
+                        btn={<div>close</div>}
                     />
                 </ModalPortal>
             ) : null}
